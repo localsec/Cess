@@ -277,7 +277,7 @@ async function run() {
     lineHeight: 1,
     space: true
   });
-  console.log(centerText("=== Telegram Channel 🚀 : NT Exhaust (@NTExhaust) ==="));
+  console.log(centerText("=== 🚀 : Đừng làm E dóp nữa, đi tán em Vân đi ==="));
   console.log(centerText("✪ CESS AUTO DAILY CHECKIN & UPLOAD FILES ✪ \n"));
   await initializeConfig();
 
