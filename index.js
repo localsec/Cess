@@ -144,7 +144,7 @@ async function initializeConfig() {
     globalUseProxy = true;
     globalProxies = await readProxies();
     if (globalProxies.length === 0) {
-      console.log(chalk.yellow('Không có proxy nào trong proxy.txt. Tiếp tục không sử dụng proxy.'));
+      console.log(chalk.yellow('Không có proxy nào trong proxy.txt. Tiếp tục mà không sử dụng proxy.'));
       globalUseProxy = false;
     }
   }
@@ -160,9 +160,9 @@ async function processToken(token, index, total, proxy = null) {
   try {
     const response = await requestWithRetry('get', 'https://merklev2.cess.network/merkle/task/status', null, getAxiosConfig(proxy, token));
     statusRes = response.data.data;
-    spinnerStatus.succeed(chalk.greenBright(' Trạng thái tài khoản đã được lấy thành công'));
+    spinnerStatus.succeed(chalk.greenBright('Đã lấy được trạng thái tài khoản'));
   } catch (error) {
-    spinnerStatus.fail(chalk.red(` Không thể lấy trạng thái: ${error.message}`));
+    spinnerStatus.fail(chalk.red(`Không thể lấy trạng thái: ${error.message}`));
     return;
   }
 
@@ -171,27 +171,27 @@ async function processToken(token, index, total, proxy = null) {
   const uuid = accountData.uuid;
   const wallet = accountData.account;
   console.log(chalk.whiteBright(`Tên người dùng   : ${username}`));
-  console.log(chalk.whiteBright(`UUID       : ${uuid}`));
-  console.log(chalk.whiteBright(`Ví tiền     : ${wallet}`));
+  console.log(chalk.whiteBright(`UUID            : ${uuid}`));
+  console.log(chalk.whiteBright(`Ví              : ${wallet}`));
   const ip = await getPublicIP(proxy);
-  console.log(chalk.whiteBright(`IP được sử dụng: ${ip}`));
+  console.log(chalk.whiteBright(`IP được sử dụng : ${ip}`));
   printSeparator();
   console.log();
 
-  const spinnerCheckin = ora({ text: ' Đang thực hiện check-in...', spinner: 'dots2', color: 'cyan' }).start();
+  const spinnerCheckin = ora({ text: 'Đang thực hiện check-in...', spinner: 'dots2', color: 'cyan' }).start();
   try {
     const response = await requestWithRetry('post', 'https://merklev2.cess.network/merkle/task/checkin', {}, getAxiosConfig(proxy, token));
     if (response.data && response.data.code === 200) {
-      spinnerCheckin.succeed(chalk.greenBright(` Check-in thành công, phần thưởng: ${response.data.data}`));
+      spinnerCheckin.succeed(chalk.greenBright(`Check-in thành công, phần thưởng: ${response.data.data}`));
     } else {
-      spinnerCheckin.fail(chalk.red(' Check-in thất bại: ' + (response.data.data || 'Phản hồi không hợp lệ')));
+      spinnerCheckin.fail(chalk.red('Check-in thất bại: ' + (response.data.data || 'Phản hồi không hợp lệ')));
     }
   } catch (error) {
-    spinnerCheckin.fail(chalk.red(` Check-in thất bại: ${error.message}`));
+    spinnerCheckin.fail(chalk.red(`Check-in thất bại: ${error.message}`));
   }
 
   for (let i = 0; i < 3; i++) {
-    const spinnerUpload = ora({ text: ` Đang tải hình ảnh ${i + 1}/3...`, spinner: 'dots2', color: 'cyan' }).start();
+    const spinnerUpload = ora({ text: `Đang tải lên hình ảnh ${i + 1}/3...`, spinner: 'dots2', color: 'cyan' }).start();
     try {
       const randomSeed = Math.floor(Math.random() * 100000);
       const imageUrl = `https://picsum.photos/seed/${randomSeed}/500/500`;
@@ -229,23 +229,23 @@ async function processToken(token, index, total, proxy = null) {
 
       const uploadResponse = await axios.post('https://filepool.cess.network/group1/upload', form, uploadConfig);
       if (uploadResponse.data && uploadResponse.data.status === 'ok') {
-        spinnerUpload.succeed(chalk.greenBright(` Tải hình ảnh ${i + 1}/3 thành công`));
+        spinnerUpload.succeed(chalk.greenBright(`Tải lên hình ảnh ${i + 1}/3 thành công`));
       } else {
-        spinnerUpload.fail(chalk.red(` Tải hình ảnh ${i + 1}/3 thất bại: ${uploadResponse.data.message || 'Phản hồi không hợp lệ'}`));
+        spinnerUpload.fail(chalk.red(`Tải lên hình ảnh ${i + 1}/3 thất bại: ${uploadResponse.data.message || 'Phản hồi không hợp lệ'}`));
       }
     } catch (error) {
-      spinnerUpload.fail(chalk.red(` Tải hình ảnh ${i + 1}/3 thất bại: ${error.message}`));
+      spinnerUpload.fail(chalk.red(`Tải lên hình ảnh ${i + 1}/3 thất bại: ${error.message}`));
     }
     await delay(1);
   }
 
-  const spinnerPoint = ora({ text: ' Đang lấy tổng số điểm...', spinner: 'dots2', color: 'cyan' }).start();
+  const spinnerPoint = ora({ text: 'Đang lấy tổng số điểm...', spinner: 'dots2', color: 'cyan' }).start();
   try {
     const finalResponse = await requestWithRetry('get', 'https://merklev2.cess.network/merkle/task/status', null, getAxiosConfig(proxy, token));
     const finalPoints = finalResponse.data.data.account.points;
-    spinnerPoint.succeed(chalk.greenBright(` Tổng số điểm : ${finalPoints}`));
+    spinnerPoint.succeed(chalk.greenBright(`Tổng số điểm : ${finalPoints}`));
   } catch (error) {
-    spinnerPoint.fail(chalk.red(` Không thể lấy điểm: ${error.message}`));
+    spinnerPoint.fail(chalk.red(`Không thể lấy điểm: ${error.message}`));
   }
   printSeparator();
 }
@@ -277,8 +277,8 @@ async function run() {
     lineHeight: 1,
     space: true
   });
-  console.log(centerText("=== 🚀 : LocalSec"));
-  console.log(centerText("✪ CESS TỰ ĐỘNG CHECK-IN HÀNG NGÀY & TẢI FILE ✪ \n"));
+  console.log(centerText("=== 🚀 : LocalSec ==="));
+  console.log(centerText("✪ CHECK-IN HÀNG NGÀY TỰ ĐỘNG CESS & TẢI LÊN TỆP ✪ \n"));
   await initializeConfig();
 
   while (true) {
