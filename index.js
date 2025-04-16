@@ -268,7 +268,7 @@ async function runCycle() {
 }
 
 async function run() {
-  cfonts.say('NT EXHAUST', {
+  cfonts.say('LocalSec', {
     font: 'block',
     align: 'center',
     colors: ['cyan', 'magenta'],
