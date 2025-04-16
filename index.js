@@ -24,10 +24,10 @@ function printSeparator() {
 }
 
 const userAgents = [
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, như Gecko) Chrome/134.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, như Gecko) Version/15.1 Safari/605.1.15',
-  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, như Gecko) Chrome/105.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, như Gecko) Firefox/102.0'
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, seperti Gecko) Chrome/134.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, seperti Gecko) Version/15.1 Safari/605.1.15',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, seperti Gecko) Chrome/105.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, seperti Gecko) Firefox/102.0'
 ];
 
 function getRandomUserAgent() {
@@ -80,7 +80,7 @@ async function requestWithRetry(method, url, payload = null, config = {}, retrie
       } else if (method.toLowerCase() === 'post') {
         response = await axios.post(url, payload, config);
       } else {
-        throw new Error(`Phương thức ${method} không được hỗ trợ.`);
+        throw new Error(`Phương pháp ${method} không được hỗ trợ.`);
       }
       return response;
     } catch (error) {
@@ -100,7 +100,7 @@ async function readTokens() {
     const data = await fs.readFile('token.txt', 'utf-8');
     return data.split('\n').map(line => line.trim()).filter(line => line.length > 0);
   } catch (error) {
-    console.error(chalk.red(`Lỗi khi đọc token.txt: ${error.message}`));
+    console.error(chalk.red(`Lỗi đọc token.txt: ${error.message}`));
     return [];
   }
 }
@@ -110,7 +110,7 @@ async function readProxies() {
     const data = await fs.readFile('proxy.txt', 'utf-8');
     return data.split('\n').map(line => line.trim()).filter(line => line.length > 0);
   } catch (error) {
-    console.error(chalk.red(`Lỗi khi đọc proxy.txt: ${error.message}`));
+    console.error(chalk.red(`Lỗi đọc proxy.txt: ${error.message}`));
     return [];
   }
 }
@@ -120,7 +120,7 @@ async function getPublicIP(proxy) {
     const response = await requestWithRetry('get', 'https://api.ipify.org?format=json', null, getAxiosConfig(proxy));
     return response?.data?.ip || 'Không tìm thấy IP';
   } catch (error) {
-    return 'Lỗi khi lấy IP';
+    return 'Lỗi khi truy xuất IP';
   }
 }
 
@@ -139,12 +139,12 @@ let globalUseProxy = false;
 let globalProxies = [];
 
 async function initializeConfig() {
-  const useProxyAns = await askQuestion('Bạn muốn sử dụng proxy? (y/n): ');
+  const useProxyAns = await askQuestion('Muốn sử dụng proxy? (y/n): ');
   if (useProxyAns.trim().toLowerCase() === 'y') {
     globalUseProxy = true;
     globalProxies = await readProxies();
     if (globalProxies.length === 0) {
-      console.log(chalk.yellow('Không có proxy nào trong proxy.txt. Tiếp tục mà không sử dụng proxy.'));
+      console.log(chalk.yellow('Không có proxy nào trong proxy.txt. Tiếp tục mà không cần proxy.'));
       globalUseProxy = false;
     }
   }
@@ -156,13 +156,13 @@ async function processToken(token, index, total, proxy = null) {
   console.log(chalk.bold.whiteBright(`Tài khoản: ${index + 1}/${total}`));
 
   let statusRes;
-  const spinnerStatus = ora({ text: 'Đang lấy trạng thái tài khoản...', spinner: 'dots2', color: 'cyan' }).start();
+  const spinnerStatus = ora({ text: 'Đang lấy trạng thái Tài khoản...', spinner: 'dots2', color: 'cyan' }).start();
   try {
     const response = await requestWithRetry('get', 'https://merklev2.cess.network/merkle/task/status', null, getAxiosConfig(proxy, token));
     statusRes = response.data.data;
-    spinnerStatus.succeed(chalk.greenBright('Đã lấy được trạng thái tài khoản'));
+    spinnerStatus.succeed(chalk.greenBright(' Status Tài khoản đã thu được thành công'));
   } catch (error) {
-    spinnerStatus.fail(chalk.red(`Không thể lấy trạng thái: ${error.message}`));
+    spinnerStatus.fail(chalk.red(` Thất bại lấy trạng thái: ${error.message}`));
     return;
   }
 
@@ -170,28 +170,28 @@ async function processToken(token, index, total, proxy = null) {
   const username = accountData.username;
   const uuid = accountData.uuid;
   const wallet = accountData.account;
-  console.log(chalk.whiteBright(`Tên người dùng   : ${username}`));
-  console.log(chalk.whiteBright(`UUID            : ${uuid}`));
-  console.log(chalk.whiteBright(`Ví              : ${wallet}`));
+  console.log(chalk.whiteBright(`Username   : ${username}`));
+  console.log(chalk.whiteBright(`UUID       : ${uuid}`));
+  console.log(chalk.whiteBright(`Wallet     : ${wallet}`));
   const ip = await getPublicIP(proxy);
-  console.log(chalk.whiteBright(`IP được sử dụng : ${ip}`));
+  console.log(chalk.whiteBright(`IP yang digunakan: ${ip}`));
   printSeparator();
   console.log();
 
-  const spinnerCheckin = ora({ text: 'Đang thực hiện check-in...', spinner: 'dots2', color: 'cyan' }).start();
+  const spinnerCheckin = ora({ text: ' Đang kiểm tra...', spinner: 'dots2', color: 'cyan' }).start();
   try {
     const response = await requestWithRetry('post', 'https://merklev2.cess.network/merkle/task/checkin', {}, getAxiosConfig(proxy, token));
     if (response.data && response.data.code === 200) {
-      spinnerCheckin.succeed(chalk.greenBright(`Check-in thành công, phần thưởng: ${response.data.data}`));
+      spinnerCheckin.succeed(chalk.greenBright(` Đã kiểm tra thành công, reward: ${response.data.data}`));
     } else {
-      spinnerCheckin.fail(chalk.red('Check-in thất bại: ' + (response.data.data || 'Phản hồi không hợp lệ')));
+      spinnerCheckin.fail(chalk.red(' Checkin Thất bại: ' + (response.data.data || 'Phản hồi không hợp lệ')));
     }
   } catch (error) {
-    spinnerCheckin.fail(chalk.red(`Check-in thất bại: ${error.message}`));
+    spinnerCheckin.fail(chalk.red(` Checkin Thất bại: ${error.message}`));
   }
 
   for (let i = 0; i < 3; i++) {
-    const spinnerUpload = ora({ text: `Đang tải lên hình ảnh ${i + 1}/3...`, spinner: 'dots2', color: 'cyan' }).start();
+    const spinnerUpload = ora({ text: ` Tải lên hình ảnh ${i + 1}/3...`, spinner: 'dots2', color: 'cyan' }).start();
     try {
       const randomSeed = Math.floor(Math.random() * 100000);
       const imageUrl = `https://picsum.photos/seed/${randomSeed}/500/500`;
@@ -229,23 +229,23 @@ async function processToken(token, index, total, proxy = null) {
 
       const uploadResponse = await axios.post('https://filepool.cess.network/group1/upload', form, uploadConfig);
       if (uploadResponse.data && uploadResponse.data.status === 'ok') {
-        spinnerUpload.succeed(chalk.greenBright(`Tải lên hình ảnh ${i + 1}/3 thành công`));
+        spinnerUpload.succeed(chalk.greenBright(` Tải lên hình ảnh ${i + 1}/3 thành công`));
       } else {
-        spinnerUpload.fail(chalk.red(`Tải lên hình ảnh ${i + 1}/3 thất bại: ${uploadResponse.data.message || 'Phản hồi không hợp lệ'}`));
+        spinnerUpload.fail(chalk.red(` Tải lên hình ảnh ${i + 1}/3 Thất bại: ${uploadResponse.data.message || 'Phản hồi không hợp lệ'}`));
       }
     } catch (error) {
-      spinnerUpload.fail(chalk.red(`Tải lên hình ảnh ${i + 1}/3 thất bại: ${error.message}`));
+      spinnerUpload.fail(chalk.red(` Tải lên hình ảnh ${i + 1}/3 Thất bại: ${error.message}`));
     }
     await delay(1);
   }
 
-  const spinnerPoint = ora({ text: 'Đang lấy tổng số điểm...', spinner: 'dots2', color: 'cyan' }).start();
+  const spinnerPoint = ora({ text: ' Tổng số điểm...', spinner: 'dots2', color: 'cyan' }).start();
   try {
     const finalResponse = await requestWithRetry('get', 'https://merklev2.cess.network/merkle/task/status', null, getAxiosConfig(proxy, token));
     const finalPoints = finalResponse.data.data.account.points;
-    spinnerPoint.succeed(chalk.greenBright(`Tổng số điểm : ${finalPoints}`));
+    spinnerPoint.succeed(chalk.greenBright(` Tổng số điểm : ${finalPoints}`));
   } catch (error) {
-    spinnerPoint.fail(chalk.red(`Không thể lấy điểm: ${error.message}`));
+    spinnerPoint.fail(chalk.red(` Lấy điểm thất bại: ${error.message}`));
   }
   printSeparator();
 }
@@ -253,7 +253,7 @@ async function processToken(token, index, total, proxy = null) {
 async function runCycle() {
   const tokens = await readTokens();
   if (tokens.length === 0) {
-    console.log(chalk.red('Không có token nào trong token.txt.'));
+    console.log(chalk.red('Không có mã thông báo nào trong token.txt.'));
     return;
   }
 
@@ -262,13 +262,13 @@ async function runCycle() {
     try {
       await processToken(tokens[i], i, tokens.length, proxy);
     } catch (error) {
-      console.error(chalk.red(`Lỗi trên tài khoản ${i + 1}: ${error.message}`));
+      console.error(chalk.red(`Lỗi trên Tài khoản ${i + 1}: ${error.message}`));
     }
   }
 }
 
 async function run() {
-  cfonts.say('LocalSec', {
+  cfonts.say('NT EXHAUST', {
     font: 'block',
     align: 'center',
     colors: ['cyan', 'magenta'],
@@ -277,13 +277,13 @@ async function run() {
     lineHeight: 1,
     space: true
   });
-  console.log(centerText("=== 🚀 : LocalSec ==="));
-  console.log(centerText("✪ CHECK-IN HÀNG NGÀY TỰ ĐỘNG CESS & TẢI LÊN TỆP ✪ \n"));
+  console.log(centerText("=== Telegram Channel 🚀 : NT Exhaust (@NTExhaust) ==="));
+  console.log(centerText("✪ CESS AUTO DAILY CHECKIN & UPLOAD FILES ✪ \n"));
   await initializeConfig();
 
   while (true) {
     await runCycle();
-    console.log(chalk.magentaBright('Chu kỳ hoàn tất. Đợi 24 giờ trước khi lặp lại...'));
+    console.log(chalk.magentaBright('Chu kỳ hoàn tất. Chờ 24 giờ trước khi lặp lại...'));
     await delay(86400);
   }
 }
