@@ -174,7 +174,7 @@ async function processToken(token, index, total, proxy = null) {
   console.log(chalk.whiteBright(`UUID       : ${uuid}`));
   console.log(chalk.whiteBright(`Wallet     : ${wallet}`));
   const ip = await getPublicIP(proxy);
-  console.log(chalk.whiteBright(`IP yang digunakan: ${ip}`));
+  console.log(chalk.whiteBright(`IP được sử dụng: ${ip}`));
   printSeparator();
   console.log();
 
